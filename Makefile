@@ -1,13 +1,17 @@
-.DEFAULT_GOAL := bin/vminer
+# Decent settings, use native processor features, unroll loops and
+# use O3 optimization
+CFLAGS = -O3 -funroll-loops -march=native
 
-bin/vminer: bin/main.o bin/sha256.o
-	@mkdir -p bin
-	@gcc -Wall -pedantic bin/main.o bin/sha256.o -o bin/vminer
+all: bin/vminer
 
-bin/main.o: src/main.c
+bin/vminer: bin/main.o bin/sha256.o Makefile
 	@mkdir -p bin
-	@gcc -c -Wall -pedantic src/main.c -o bin/main.o
+	gcc ${CFLAGS} -Wall -pedantic bin/main.o bin/sha256.o -o bin/vminer
 
-bin/sha256.o: src/sha256.c
+bin/main.o: src/main.c Makefile
 	@mkdir -p bin
-	@gcc -c -Wall -pedantic src/sha256.c -o bin/sha256.o
+	gcc  ${CFLAGS} -c -Wall -pedantic src/main.c -o bin/main.o
+
+bin/sha256.o: src/sha256.c Makefile
+	@mkdir -p bin
+	gcc  ${CFLAGS} -c -Wall -pedantic src/sha256.c -o bin/sha256.o
